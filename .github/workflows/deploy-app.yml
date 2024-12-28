@@ -40,8 +40,8 @@ jobs:
         run: |
           echo "${{ secrets.AWS_KEY }}" > $KEY_PATH
           chmod 600 $KEY_PATH
-          scp -i $KEY_PATH -r . ec2-user@${{ env.INSTANCE_IP }}:/home/ec2-user/app
-          ssh -i $KEY_PATH ec2-user@${{ env.INSTANCE_IP }} 'cd /home/ec2-user/app && npm install && node app.js'
+          scp -i $KEY_PATH -r . ubuntu@${{ env.INSTANCE_IP }}:/home/ubuntu/app
+          ssh -i $KEY_PATH ubuntu@${{ env.INSTANCE_IP }} 'cd /home/ubuntu/app && npm install && node app.js'
           
   SCA:
     name: SCA
