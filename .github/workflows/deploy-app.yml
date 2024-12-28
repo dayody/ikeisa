@@ -39,9 +39,9 @@ jobs:
           scp -i path/to/your-key.pem -r . ec2-user@${{ env.INSTANCE_IP }}:/home/ec2-user/app
           ssh -i path/to/your-key.pem ec2-user@${{ env.INSTANCE_IP }} 'cd /home/ec2-user/app && npm install && node app.js'
 
-SCA:
-      - name: security_tests:
-        runs-on: ubuntu-latest
+  SCA:
+    name: SCA
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
@@ -54,9 +54,9 @@ SCA:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
-SAST:
-      - name: security_tests:
-        runs-on: ubuntu-latest
+  SAST:
+    name: SAST
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
@@ -67,9 +67,9 @@ SAST:
           npm install eslint
           npx eslint .
 
-DAST:
-      - name: security_tests:
-        runs-on: ubuntu-latest
+  DAST:
+    name: DAST
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
