@@ -34,11 +34,15 @@ jobs:
 
       - name: Deploy to EC2
         env:
-          INSTANCE_IP: ${{ steps.terraform.outputs.instance_public_ip.value }}
+          INSTANCE_IP: ${{ needs.terraform.outputs.instance_public_ip }}
+          # Path where the key will be stored temporarily
+          KEY_PATH: /tmp/key.pem
         run: |
-          scp -i /path/to/your-key.pem -r . ec2-user@${{ env.INSTANCE_IP }}:/home/ec2-user/app
-          ssh -i /path/to/your-key.pem ec2-user@${{ env.INSTANCE_IP }} 'cd /home/ec2-user/app && npm install && node app.js'
-
+          echo "${{ secrets.AWS_KEY }}" > $KEY_PATH
+          chmod 600 $KEY_PATH
+          scp -i $KEY_PATH -r . ec2-user@${{ env.INSTANCE_IP }}:/home/ec2-user/app
+          ssh -i $KEY_PATH ec2-user@${{ env.INSTANCE_IP }} 'cd /home/ec2-user/app && npm install && node app.js'
+          
   SCA:
     name: SCA
     runs-on: ubuntu-latest
