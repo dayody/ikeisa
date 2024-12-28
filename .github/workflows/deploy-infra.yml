@@ -34,6 +34,11 @@ jobs:
 
       - name: Terraform Apply
         run: terraform apply -auto-approve
+
+      - name: Output instance public IP
+        id: output
+        run: |
+          echo "::set-output name=instance_public_ip::$(terraform output -raw instance_public_ip)"
       
       - name: Download and Set Up TFSec
         run: |
