@@ -38,3 +38,43 @@ jobs:
         run: |
           scp -i path/to/your-key.pem -r . ec2-user@${{ env.INSTANCE_IP }}:/home/ec2-user/app
           ssh -i path/to/your-key.pem ec2-user@${{ env.INSTANCE_IP }} 'cd /home/ec2-user/app && npm install && node app.js'
+
+SCA:
+      - name: security_tests:
+        runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Run Snyk for SCA
+        uses: snyk/actions/node@v2
+        with:
+          command: test
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+SAST:
+      - name: security_tests:
+        runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Run ESLint for SAST
+        run: |
+          npm install eslint
+          npx eslint .
+
+DAST:
+      - name: security_tests:
+        runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Run OWASP ZAP for DAST
+        run: |
+          docker run -t owasp/zap2docker-stable zap-baseline.py -t http://${{ steps.terraform.outputs.instance_public_ip }}:8080 -r zap_report.html
