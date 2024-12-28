@@ -46,29 +46,3 @@ jobs:
 
       - name: Run tfsec (Terraform Security Scanner)
         run: tfsec
-
-  build_and_deploy:
-    runs-on: ubuntu-latest
-    needs: terraform
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '14'
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Run tests
-        run: npm test
-
-      - name: Deploy to EC2
-        env:
-          INSTANCE_IP: ${{ steps.terraform.outputs.instance_public_ip }}
-        run: |
-          scp -i path/to/your-key.pem -r . ec2-user@${{ env.INSTANCE_IP }}:/home/ec2-user/app
-          ssh -i path/to/your-key.pem ec2-user@${{ env.INSTANCE_IP }} 'cd /home/ec2-user/app && npm install && node app.js'
