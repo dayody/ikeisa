@@ -4,11 +4,20 @@ provider "aws" {
 
 resource "aws_vpc" "main" {
   cidr_block = "10.0.0.0/16"
+
+  tags = {
+    Name = "hello-vpc"
+  }
 }
+
 
 resource "aws_subnet" "subnet" {
   vpc_id     = aws_vpc.main.id
   cidr_block = "10.0.1.0/24"
+  
+  tags = {
+    Name = "hello-subnet"
+  }
 }
 
 resource "aws_security_group" "sg" {
@@ -40,7 +49,7 @@ resource "aws_instance" "web" {
   ami           = "ami-05c172c7f0d3aed00" # Ubuntu
   instance_type = "t2.micro"
   subnet_id     = aws_subnet.subnet.id
-  security_groups = [aws_security_group.sg.name]
+  vpc_security_group_ids = [aws_security_group.sg.name]
 
   user_data = <<-EOF
               #!/bin/bash
