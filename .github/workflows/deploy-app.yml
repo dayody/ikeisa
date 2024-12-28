@@ -1,0 +1,40 @@
+name: Deploy Application
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Build and Push Docker Image
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-west-2  
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: npm test
+
+      - name: Deploy to EC2
+        env:
+          INSTANCE_IP: ${{ steps.terraform.outputs.instance_public_ip }}
+        run: |
+          scp -i path/to/your-key.pem -r . ec2-user@${{ env.INSTANCE_IP }}:/home/ec2-user/app
+          ssh -i path/to/your-key.pem ec2-user@${{ env.INSTANCE_IP }} 'cd /home/ec2-user/app && npm install && node app.js'
