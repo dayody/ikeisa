@@ -34,10 +34,10 @@ jobs:
 
       - name: Deploy to EC2
         env:
-          INSTANCE_IP: ${{ steps.terraform.outputs.instance_public_ip }}
+          INSTANCE_IP: ${{ steps.terraform.outputs.instance_public_ip.value }}
         run: |
-          scp -i path/to/your-key.pem -r . ec2-user@${{ env.INSTANCE_IP }}:/home/ec2-user/app
-          ssh -i path/to/your-key.pem ec2-user@${{ env.INSTANCE_IP }} 'cd /home/ec2-user/app && npm install && node app.js'
+          scp -i /path/to/your-key.pem -r . ec2-user@${{ env.INSTANCE_IP }}:/home/ec2-user/app
+          ssh -i /path/to/your-key.pem ec2-user@${{ env.INSTANCE_IP }} 'cd /home/ec2-user/app && npm install && node app.js'
 
   SCA:
     name: SCA
