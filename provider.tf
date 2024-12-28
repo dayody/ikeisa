@@ -48,8 +48,8 @@ resource "aws_security_group" "sg" {
 resource "aws_instance" "web" {
   ami           = "ami-05c172c7f0d3aed00" # Ubuntu
   instance_type = "t2.micro"
-  subnet_id     = aws_subnet.subnet.id
-  vpc_security_group_ids = [aws_security_group.sg.name]
+  subnet_id     = aws_subnet.public.id
+  security_group_ids = [aws_security_group.web.id]
 
   user_data = <<-EOF
               #!/bin/bash
