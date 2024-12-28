@@ -73,12 +73,6 @@ resource "aws_instance" "web" {
   subnet_id     = aws_subnet.public_subnet.id
   vpc_security_group_ids = [aws_security_group.web_sg.id]  # Use vpc_security_group_ids instead of security_groups
 
-resource "aws_instance" "web" {
-  ami           = "ami-05c172c7f0d3aed00" # Ubuntu
-  instance_type = "t2.micro"
-  subnet_id     = aws_subnet.public.id
-  security_group_ids = [aws_security_group.web.id]
-
   user_data = <<-EOF
               #!/bin/bash
               sudo yum update -y
